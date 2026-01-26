@@ -4,24 +4,26 @@
 </script>
 
 <div class="bg-white/2 border border-white/5 rounded-[40px] p-6 mb-6 flex gap-10 shadow-xl shadow-black/20">
-    <!-- round square box -->
-    <div class="w-[210px] aspect-square flex flex-col items-center justify-center bg-black/40 rounded-[32px] p-5 border border-white/5 shadow-inner shrink-0">
-        <div class="relative mb-6">
-            <div class="absolute inset-0 bg-blue-500/10 blur-3xl rounded-full"></div>
-            <!-- pfp -->
-            <div class="relative h-20 w-20">
-                <div class="w-full h-full rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
-                    <img src={avatar} alt="User Avatar" class="w-full h-full object-cover" />
-                </div>
-                <!-- seal check -->
-                <div class="absolute -top-1.5 -right-1.5 h-8 w-8 flex items-center justify-center z-10">
-                    <i class="bx bxs-badge-check text-yellow-500 text-[28px]"></i>
-                </div>
-            </div>
+    <!-- Profile Card (Full Image) -->
+    <div class="w-[210px] aspect-square rounded-[32px] overflow-hidden relative border border-white/5 shadow-2xl shrink-0 group select-none">
+        <!-- background avatar -->
+        <img src={avatar} alt="User" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000" />
+        
+        <!-- black gradient overlay from bottom -->
+        <div class="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none z-10"></div>
+        
+        <!-- seal check in corner -->
+        <div class="absolute top-4 right-4 z-20">
+            
         </div>
-        <div class="text-center overflow-hidden w-full">
-            <div class="text-xl font-bold text-white leading-tight truncate">{name}</div>
-            <div class="text-xs font-medium text-white/50 truncate mt-2">admin@sendio.dev</div>
+
+        <!-- text inside at bottom -->
+        <div class="absolute inset-x-0 bottom-0 p-6 z-20 flex flex-col gap-0.5">
+            <h3 class="flex items-center gap-0.5 text-xl font-black text-white leading-tight tracking-tight drop-shadow-lg">
+                <span>{name}</span>
+                <i title="premium" class="bx bxs-badge-check text-[#FFB800] text-xl transform translate-y-px drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]"></i>
+            </h3>
+            <p class="text-[11px] font-bold text-white/50 tracking-wide uppercase">admin@sendio.dev</p>
         </div>
     </div>
 

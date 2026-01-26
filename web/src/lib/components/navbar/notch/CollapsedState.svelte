@@ -30,8 +30,12 @@
             onclick={(e) => e.stopPropagation()}
             class="group relative flex h-9 w-9 items-center justify-center rounded-full p-0.5 transition-all hover:scale-110 active:scale-95 bg-linear-to-tr from-white/10 to-white/5 border border-white/10 overflow-visible"
         >
-            <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden shadow-2xl">
+            <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden shadow-2xl relative">
                 <img src={avatar} alt="Login" class="w-full h-full object-cover" />
+            </div>
+            <!-- seal check -->
+            <div class="absolute -top-0.5 -right-1 z-20 flex items-center justify-center">
+                <i class="bx bxs-badge-check text-[#FFB800] text-[16px] drop-shadow-md"></i>
             </div>
         </a>
     </div>
