@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+
+@theme {
+	--font-sans: 'Outfit', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+	--color-bg-primary: #FFFFFF;
+	--color-bg-secondary: #F2F2F7;
+	--color-bg-card: #FFFFFF;
+
+	--color-accent: #007AFF;
+	--color-accent-hover: #0066CC;
+
+	--color-text-primary: #1C1C1E;
+	--color-text-muted: #8E8E93;
+
+	--color-border: #E5E5EA;
+
+	--color-success: #34C759;
+	--color-error: #FF3B30;
+	--color-warning: #FF9F0A;
+
+	--radius-2xl: 18px;
+	--radius-3xl: 28px;
+}
+
+html {
+	background: var(--color-bg-primary);
+	color: var(--color-text-primary);
+	font-family: var(--font-sans);
+	scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.glass {
+	background: rgba(255, 255, 255, 0.75);
+	backdrop-filter: saturate(180%) blur(20px);
+	-webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+.bento-card {
+	background: var(--color-bg-card);
+	border-radius: 28px;
+	border: 1px solid rgba(0, 0, 0, 0.04);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento-card:hover {
+	border-color: rgba(0, 0, 0, 0.08);
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.03);
+	transform: translateY(-2px);
+}
