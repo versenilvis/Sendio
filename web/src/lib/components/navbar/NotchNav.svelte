@@ -3,7 +3,7 @@
 	import CollapsedState from './notch/CollapsedState.svelte';
 	import MetricWidget from './notch/MetricWidget.svelte';
 	import NavGrid from './notch/NavContent.svelte';
-	import NavFooter from './notch/NavFooter.svelte';
+	import SendioLogo from '$lib/components/icons/SendioLogo.svelte';
 
 	let isExpanded = $state(false);
 	let isHovered = $state(false);
@@ -34,10 +34,20 @@
 			aria-label="Toggle Control Center"
 			onmouseenter={() => isHovered = true}
 			onmouseleave={() => isHovered = false}
-			onclick={(e) => { e.stopPropagation(); isExpanded = !isExpanded; }}
-			onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); isExpanded = !isExpanded; } }}
+			onclick={(e) => { 
+				if (!isExpanded) {
+					e.stopPropagation(); 
+					isExpanded = true; 
+				}
+			}}
+			onkeydown={(e) => { 
+				if (!isExpanded && (e.key === 'Enter' || e.key === ' ')) { 
+					e.preventDefault(); 
+					isExpanded = true; 
+				} 
+			}}
 			class="relative flex flex-col bg-black pointer-events-auto transition-[width,height,border-radius,padding] duration-400 ease-[cubic-bezier(0.2,1,0.2,1)] overflow-hidden outline-none
-				{isExpanded ? 'w-[920px] h-[640px] rounded-b-[56px] pt-12 cursor-default' : isHovered ? 'w-[380px] h-[64px] rounded-b-[32px] cursor-pointer' : 'w-[320px] h-[52px] rounded-b-[24px] cursor-pointer'}"
+				{isExpanded ? 'w-[920px] h-[640px] rounded-b-[36px] pt-8 cursor-default' : isHovered ? 'w-[380px] h-[64px] rounded-b-[32px] cursor-pointer' : 'w-[320px] h-[52px] rounded-b-[24px] cursor-pointer'}"
 		>
 			<!-- subtle surface shine -->
 			<div class="absolute inset-0 bg-linear-to-b from-white/8 to-transparent pointer-events-none"></div>
@@ -58,11 +68,49 @@
 				<div 
 					in:fade={{ duration: 250, delay: 150 }}
 					out:fade={{ duration: 0 }}
-					class="w-full px-12 relative z-10 text-left h-full flex flex-col justify-center"
+					class="w-full px-12 relative z-10 text-left h-full flex flex-col"
 				>
+					<!-- Top Row: Brand & Compact Search -->
+					<div class="flex items-center justify-between mb-8">
+						<!-- logo -->
+						<a href="/" class="flex items-center text-xl font-black tracking-tight text-white transition-opacity hover:opacity-80" onclick={(e) => e.stopPropagation()}>
+							<div class="flex h-8 w-8 items-center justify-center rounded-lg">
+								<SendioLogo class="h-6 w-6" />
+							</div>
+							<span class="text-white uppercase">Sendio</span>
+						</a>
+
+						<!-- Brand & Utilities -->
+						<div class="flex items-center gap-5">
+							
+
+							<!-- Compact Search -->
+							<div class="relative group w-48">
+								<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-white/80 group-focus-within:text-emerald-400 transition-colors">
+									<i class='bx bx-search text-lg'></i>
+								</div>
+								<input 
+									type="text" 
+									placeholder="Quick search..." 
+									class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-11 pr-4 text-white placeholder:text-white/80 outline-none focus:bg-white/10 focus:border-emerald-500/50 transition-all text-xs font-medium"
+									onclick={(e) => e.stopPropagation()}
+								/>
+								
+								<!-- <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+									<kbd class="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/80 text-[8px] uppercase font-black tracking-tighter">
+										<span class="text-[9px]">⌘</span>K
+									</kbd>
+								</div> -->
+							</div>
+							<button title="Settings" onclick={(e) => e.stopPropagation()} class="text-white/40 hover:text-white transition-all cursor-pointer">
+								<i class='bx bx-cog text-2xl hover:rotate-90 transition-transform'></i>
+							</button>
+						</div>
+					</div>
+
 					<MetricWidget {name} />
 					<NavGrid />
-					<NavFooter />
+					
 				</div>
 			{/if}
 		</div>
