@@ -15,7 +15,7 @@
     onMount(() => {
         const interval = setInterval(() => {
             activeIndex = (activeIndex + 1) % views.length;
-        }, 4000);
+        }, 2000);
         return () => clearInterval(interval);
     });
 </script>
