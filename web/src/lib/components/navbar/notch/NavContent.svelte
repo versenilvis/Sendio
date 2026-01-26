@@ -51,7 +51,7 @@
             <a href="/support" class="text-white/60 hover:text-emerald-400 transition-colors font-bold text-base no-underline">Live Chat</a>
             <a href="/status" class="text-white/60 hover:text-emerald-400 transition-colors font-bold text-base no-underline">System Status</a>
             <a href="/pricing" class="text-white hover:text-emerald-400 transition-colors font-black text-lg no-underline mt-2 flex items-center gap-2">
-                Plans 
+                Pricing 
                 <span class="material-symbols-rounded text-sm text-white/20">open_in_new</span>
             </a>
         </div>
