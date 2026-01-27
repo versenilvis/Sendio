@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import { tick } from 'svelte';
 	import CollapsedState from './notch/CollapsedState.svelte';
 	import MetricWidget from './notch/MetricWidget.svelte';
 	import NavGrid from './notch/NavContent.svelte';
@@ -8,12 +9,19 @@
 	let isExpanded = $state(false);
 	let isHovered = $state(false);
 	let islandRef: HTMLElement;
+	let searchInput = $state<HTMLInputElement>();
+
+	async function handleSearchClick() {
+		isExpanded = true;
+		await tick();
+		if (searchInput) searchInput.focus();
+	}
 
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape') isExpanded = false;
 	}
 
-	let name = "Verse Admin"
+	let name = "Admin Verse"
 </script>
 
 <svelte:window 
@@ -25,8 +33,20 @@
 	onkeydown={handleKeydown}
 />
 
-<div class="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none select-none">
-	<div class="relative notch-wrapper {isExpanded ? 'expanded' : ''}">
+<div class="fixed top-0 left-0 right-0 z-50 pointer-events-none select-none">
+	<!-- brand -->
+	<!-- <div class="absolute left-4 top-2">
+		<a href="/" class="pointer-events-auto flex items-center group" aria-label="Home">
+			<div class="flex h-12 w-12 items-center justify-center rounded-lg text-black transition-transform">
+				<SendioLogo class="h-8 w-8" />
+			</div>
+			<span class="text-2xl font-black uppercase text-black">Sendio</span>
+		</a>
+	</div> -->
+
+	<!-- Notch Section -->
+	<div class="flex justify-center">
+		<div class="relative notch-wrapper {isExpanded ? 'expanded' : ''}">
 		<div 
 			bind:this={islandRef}
 			role="button"
@@ -47,7 +67,7 @@
 				} 
 			}}
 			class="relative flex flex-col bg-black pointer-events-auto transition-[width,height,border-radius,padding] duration-400 ease-[cubic-bezier(0.2,1,0.2,1)] overflow-hidden outline-none
-				{isExpanded ? 'w-[920px] h-[640px] rounded-b-[36px] pt-8 cursor-default' : isHovered ? 'w-[380px] h-[64px] rounded-b-[32px] cursor-pointer' : 'w-[320px] h-[52px] rounded-b-[24px] cursor-pointer'}"
+				{isExpanded ? 'w-[920px] h-[640px] rounded-b-[48px] pt-8 cursor-default' : isHovered ? 'w-[440px] h-[70px] rounded-b-[36px] cursor-pointer' : 'w-[380px] h-[60px] rounded-b-[30px] cursor-pointer'}"
 		>
 			<!-- subtle surface shine -->
 			<div class="absolute inset-0 bg-linear-to-b from-white/8 to-transparent pointer-events-none"></div>
@@ -59,7 +79,7 @@
 					out:fade={{ duration: 0 }}
 					class="w-full h-full"
 				>
-					<CollapsedState {name} />
+					<CollapsedState {name} onSearch={handleSearchClick} />
 				</div>
 			{/if}
 
@@ -90,6 +110,7 @@
 									<i class='bx bx-search text-lg'></i>
 								</div>
 								<input 
+									bind:this={searchInput}
 									type="text" 
 									placeholder="Quick search..." 
 									class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-11 pr-4 text-white placeholder:text-white/80 outline-none focus:bg-white/10 focus:border-emerald-500/50 transition-all text-xs font-medium"
@@ -115,6 +136,7 @@
 			{/if}
 		</div>
 	</div>
+</div>
 </div>
 
 <style>
