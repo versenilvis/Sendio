@@ -4,7 +4,6 @@
 </script>
 
 <div class="bg-white/2 border border-white/5 rounded-[40px] p-6 mb-6 flex gap-10 shadow-xl shadow-black/20">
-    <!-- Profile Card (Full Image) -->
     <div class="w-[210px] aspect-square rounded-[32px] overflow-hidden relative border border-white/5 shadow-2xl shrink-0 group select-none">
         <!-- background avatar -->
         <img src={avatar} alt="User" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000" />
@@ -19,11 +18,15 @@
 
         <!-- text inside at bottom -->
         <div class="absolute inset-x-0 bottom-0 p-6 z-20 flex flex-col gap-0.5">
-            <h3 class="flex items-center gap-0.5 text-xl font-black text-white leading-tight tracking-tight drop-shadow-lg">
+            <h3 class="text-lg font-bold text-white leading-[1.2] tracking-tight drop-shadow-lg">
                 <span>{name}</span>
-                <i title="premium" class="bx bxs-badge-check text-[#FFB800] text-xl transform translate-y-px drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]"></i>
+                <i title="premium" class="bx bxs-badge-check text-[#FFB800] text-[18px] inline-block align-middle ml-0.5 transform -translate-y-px drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]"></i>
             </h3>
-            <p class="text-[11px] font-bold text-white/50 tracking-wide uppercase">admin@sendio.dev</p>
+            <!-- e.g. djka...sajd@gmail.com -->
+            <p class="text-[11px] font-medium text-white/50 tracking-wide lowercase flex w-full items-center min-w-0 overflow-hidden">
+                <span class="truncate min-w-0">admin</span>
+                <span class="flex-none">@sendio.dev</span>
+            </p>
         </div>
     </div>
 
