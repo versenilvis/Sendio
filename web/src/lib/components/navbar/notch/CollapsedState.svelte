@@ -4,13 +4,13 @@
     import { fly } from 'svelte/transition';
     import SendioLogo from '$lib/components/icons/SendioLogo.svelte';
 
-    let { name } = $props<{ name: string }>();
+    let { name, onSearch } = $props<{ name: string, onSearch: () => void }>();
     
     let activeIndex = $state(0);
     let views = $derived([
-        { type: 'name', value: name, color: 'text-white/95 font-black' },
+        { type: 'name', value: name, color: 'text-white font-black' },
         { type: 'growth', value: '+12.4%', color: 'text-emerald-400 font-semibold' },
-        { type: 'quota', value: '5,863 / 8,000', color: 'text-white/95 font-bold' },
+        { type: 'quota', value: '5,863 / 8,000', color: 'text-white font-bold' },
         { type: 'brand', isBrand: true }
     ]);
 
@@ -22,18 +22,29 @@
     });
 </script>
 
-<div class="grid grid-cols-[40px_1fr_40px] items-center h-full px-5 relative z-10 w-full">
-    <!-- avatar (Login button) -->
-    <div class="flex items-center justify-start h-full">
+<div class="grid grid-cols-[84px_1fr_84px] items-center h-full px-5 relative z-10 w-full">
+    <!-- left -->
+    <div class="flex items-center justify-start gap-3 h-full">
+        <!-- home -->
+        <a 
+            href="/"
+            onclick={(e) => e.stopPropagation()}
+            class="group relative flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110 active:scale-95 text-white"
+            title="Return Home"
+        >
+            <SendioLogo class="h-5 w-5" />
+        </a>
+
+        <!-- avatar (Login button) -->
         <a 
             href="/login"
             onclick={(e) => e.stopPropagation()}
-            class="group relative flex h-9 w-9 items-center justify-center rounded-full p-0.5 transition-all hover:scale-110 active:scale-95 bg-linear-to-tr from-white/10 to-white/5 border border-white/10 overflow-visible"
+            class="group relative flex h-7 w-7 items-center justify-center rounded-full p-0.5 transition-all hover:scale-110 active:scale-95 bg-linear-to-tr from-white/20 to-white/5 border border-white/20"
         >
-            <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden shadow-2xl relative">
+            <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
                 <img src={avatar} alt="Login" class="w-full h-full object-cover" />
             </div>
-            <!-- seal check -->
+             <!-- seal check -->
             <div class="absolute -top-0.5 -right-1 z-20 flex items-center justify-center">
                 <i class="bx bxs-badge-check text-[#FFB800] text-[16px] drop-shadow-md"></i>
             </div>
@@ -50,13 +61,11 @@
             >
                 {#if views[activeIndex].isBrand}
                     <div class="flex items-center gap-1.5">
-                        <div class="flex h-5 w-5 items-center justify-center text-white">
-                            <SendioLogo class="h-full w-full" />
-                        </div>
-                        <span class="text-white uppercase font-black tracking-tight text-[16px]">Sendio</span>
+                        <!-- <SendioLogo class="h-4 w-4 text-white" /> -->
+                        <span class="text-white uppercase font-black tracking-tight text-[15px]">Sendio</span>
                     </div>
                 {:else}
-                    <span class="text-[14px] tracking-tight {views[activeIndex].color} truncate leading-none">
+                    <span class="text-[14px] tracking-tight {views[activeIndex].color} truncate">
                         {views[activeIndex].value}
                     </span>
                 {/if}
@@ -64,10 +73,30 @@
         {/key}
     </div>
 
-    <!-- noti bell -->
-    <div class="flex items-center justify-end">
-        <div class="flex items-center text-orange-300">
-            <i class="bx bx-bell text-[21px] leading-none"></i>
+    <!-- right -->
+    <div class="flex items-center justify-end gap-3 h-full">
+        <!-- noti bell -->
+        <div class="flex items-center text-orange-300 relative group cursor-pointer" title="Notifications">
+            <i class="bx bx-bell text-[21px] leading-none transition-transform group-hover:rotate-12"></i>
+            <!-- indicator -->
+            <div class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-red-500 border border-black animate-pulse"></div>
+        </div>
+
+        <!-- search -->
+        <div 
+            role="button"
+            tabindex="0"
+            onclick={(e) => { e.stopPropagation(); onSearch(); }}
+            onkeydown={(e) => {
+                if (e.key === 'Enter') {
+                    e.stopPropagation();
+                    onSearch();
+                }
+            }}
+            class="flex items-center text-white transition-all cursor-pointer p-1 rounded-full" 
+            title="Search"
+        >
+            <i class='bx bx-search text-[20px]'></i>
         </div>
     </div>
 </div>
