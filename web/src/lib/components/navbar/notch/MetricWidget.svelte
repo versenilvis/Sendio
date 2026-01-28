@@ -35,10 +35,16 @@
         <div class="absolute inset-x-0 bottom-0 p-6 z-20 flex flex-col gap-1">
             <button 
                 onclick={handleCopyName}
-                class="group transition-all active:scale-95 text-left cursor-pointer"
+                class="group transition-all active:scale-95 text-left"
             >
                 <h3 class="text-lg font-bold leading-[1.3] tracking-tight drop-shadow-lg text-white">
-                    {user.name}{#if user.isPremium}<i title="premium" class="bx bxs-badge-check text-[#FFB800] text-[18px] inline align-middle ml-0.5 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]"></i>{/if}{#if nameCopied}<span class="inline-flex align-middle ml-1"><CheckCopy class="h-4 w-4" /></span>{/if}
+                    <span class="cursor-pointer">{user.name}</span>
+                    {#if user.isPremium}
+                        <i title="premium" class="bx bxs-badge-check text-[#FFB800] text-[18px] inline align-middle ml-0.5 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]"></i>
+                    {/if}
+                    {#if nameCopied}
+                        <span class="inline-flex align-middle ml-1"><CheckCopy class="h-4 w-4" /></span>
+                    {/if}
                 </h3>
             </button>
             
