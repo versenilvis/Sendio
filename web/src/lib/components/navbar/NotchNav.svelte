@@ -20,8 +20,6 @@
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape') isExpanded = false;
 	}
-
-	let name = "Admin Verse"
 </script>
 
 <svelte:window 
@@ -79,7 +77,7 @@
 					out:fade={{ duration: 0 }}
 					class="w-full h-full"
 				>
-					<CollapsedState {name} onSearch={handleSearchClick} />
+					<CollapsedState onSearch={handleSearchClick} />
 				</div>
 			{/if}
 
@@ -129,7 +127,7 @@
 						</div>
 					</div>
 
-					<MetricWidget {name} />
+					<MetricWidget />
 					<NavGrid />
 					
 				</div>
