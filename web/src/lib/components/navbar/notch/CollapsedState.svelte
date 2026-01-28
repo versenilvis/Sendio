@@ -1,16 +1,16 @@
 <script lang="ts">
-	import avatar from '$lib/assets/avatar.png';
     import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
     import SendioLogo from '$lib/components/icons/SendioLogo.svelte';
+    import { user, getGrowthDisplay } from '$lib/stores/user.svelte';
 
-    let { name, onSearch } = $props<{ name: string, onSearch: () => void }>();
+    let { onSearch } = $props<{ onSearch: () => void }>();
     
     let activeIndex = $state(0);
     let views = $derived([
-        { type: 'name', value: name, color: 'text-white font-black' },
-        { type: 'growth', value: '+12.4%', color: 'text-emerald-400 font-semibold' },
-        { type: 'quota', value: '5,863 / 8,000', color: 'text-white font-bold' },
+        { type: 'name', value: user.name, color: 'text-white font-black' },
+        { type: 'growth', value: getGrowthDisplay(), color: 'text-emerald-400 font-semibold' },
+        { type: 'quota', value: `${user.usage.sent.toLocaleString()} / ${user.usage.quota.toLocaleString()}`, color: 'text-white font-bold' },
         { type: 'brand', isBrand: true }
     ]);
 
@@ -38,15 +38,16 @@
         <!-- avatar (Login button) -->
         <a 
             href="/login"
+            draggable="false"
             onclick={(e) => e.stopPropagation()}
             class="group relative flex h-7 w-7 items-center justify-center rounded-full p-0.5 transition-all hover:scale-110 active:scale-95 bg-linear-to-tr from-white/20 to-white/5 border border-white/20"
         >
             <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
-                <img src={avatar} alt="Login" class="w-full h-full object-cover" />
+                <img draggable="false" src={user.avatarUrl} alt="Login" class="w-full h-full object-cover" />
             </div>
              <!-- seal check -->
             <div class="absolute -top-0.5 -right-1 z-20 flex items-center justify-center">
-                <i class="bx bxs-badge-check text-[#FFB800] text-[16px] drop-shadow-md"></i>
+                <i draggable="false" class="bx bxs-badge-check text-[#FFB800] text-[16px] drop-shadow-md"></i>
             </div>
         </a>
     </div>
@@ -93,7 +94,7 @@
                     onSearch();
                 }
             }}
-            class="flex items-center text-white transition-all cursor-pointer p-1 rounded-full" 
+            class="flex items-center text-white transition-all cursor-pointer p-1 rounded-full hover:scale-110 active:scale-95" 
             title="Search"
         >
             <i class='bx bx-search text-[20px]'></i>
