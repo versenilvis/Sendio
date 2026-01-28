@@ -82,7 +82,7 @@
             
             <div class="relative w-full h-8 flex items-center">
                 <!-- background track -->
-                <div class="absolute inset-0 h-3 top-2.5 bg-white/5 rounded-full border border-white/5 overflow-hidden">
+                <div class="absolute inset-0 h-2.5 top-2.5 bg-white/10 rounded-full overflow-hidden">
                     <!-- progress fill -->
                     <div 
                         class="h-full bg-white rounded-full transition-all duration-1000 ease-out shadow-[0_0_20px_white]" 
