@@ -1,4 +1,4 @@
-// Package database - db
+// Package database - db (PostgreSQL)
 package database
 
 import (
@@ -48,8 +48,9 @@ func NewConnection() (*DB, error) {
 	return &DB{Pool: pool}, nil
 }
 
-func (db *DB) Close() {
+func (db *DB) Close() error {
 	if db.Pool != nil {
 		db.Pool.Close()
 	}
+	return nil
 }
