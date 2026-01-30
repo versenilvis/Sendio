@@ -33,6 +33,7 @@ create table api_keys (
     deleted_at      timestamptz                 -- soft delete
 );
 
+-- note: this is for our dashboard, store emails sent by days
 create table api_key_usage (
     id              uuid primary key default gen_random_uuid(),
     api_key_id      uuid not null references api_keys(id) on delete cascade,
