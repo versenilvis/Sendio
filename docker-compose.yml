@@ -1,27 +1,33 @@
 services:
   postgres:
     image: postgres:16-alpine
+    container_name: sendio-postgres
     environment:
-      - POSTGRES_USER=sendio
-      - POSTGRES_PASSWORD=sendio
-      - POSTGRES_DB=sendio
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
+    container_name: sendio-redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    restart: unless-stopped
 
   mailpit:
     image: axllent/mailpit
+    container_name: sendio-mailpit
     ports:
-      - "1025:1025" # SMTP
-      - "8025:8025" # Mailpit web ui
+      - "1025:1025"
+      - "8025:8025"
+    restart: unless-stopped
 
 volumes:
   postgres_data:
