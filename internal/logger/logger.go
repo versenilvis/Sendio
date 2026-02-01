@@ -17,6 +17,7 @@ import (
 
 var Log *zap.Logger
 
+// InitLogger initializes the zap logger
 func InitLogger() {
 	env := utils.GetEnv("APP_ENV", "development")
 	isDev := env == "development"
@@ -45,6 +46,7 @@ func InitLogger() {
 	Log = zap.New(core, options...)
 }
 
+// getFileLog returns a JSON encoder for file logging
 func getFileLog() zapcore.Encoder {
 	encodeConfig := zap.NewProductionEncoderConfig()
 	encodeConfig.TimeKey = "time"
@@ -54,6 +56,7 @@ func getFileLog() zapcore.Encoder {
 	return zapcore.NewJSONEncoder(encodeConfig)
 }
 
+// getConsoleEncoder is your config for console logging
 func getConsoleEncoder(isDev bool) zapcore.Encoder {
 	encodeConfig := zapcore.EncoderConfig{
 		TimeKey:          "TIME",
@@ -75,6 +78,8 @@ func getConsoleEncoder(isDev bool) zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(encodeConfig)
 }
 
+// getWriterSync would handle log path if it was not created
+// using lumberjack for log rotation
 func getWriterSync() zapcore.WriteSyncer {
 	// Create log directory if it doesn't exist
 	path := utils.GetEnv("LOG_PATH", "log/")
@@ -94,6 +99,7 @@ func getWriterSync() zapcore.WriteSyncer {
 	return zapcore.NewMultiWriteSyncer(syncfile)
 }
 
+// customTimeEncoder formats the time
 func customTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 	enc.AppendString(fmt.Sprintf("[%s]", t.Format("15:04:05-02/01/2006")))
 }
