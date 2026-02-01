@@ -24,7 +24,7 @@ func Load() *Config {
 	return &Config{
 		Port:          utils.GetEnv("PORT", "8080"),
 		Env:           utils.GetEnv("APP_ENV", "development"),
-		DatabaseURL:   utils.GetEnv("DATABASE_URL", "postgres://sendio:sendio@localhost:5432/sendio?sslmode=disable"),
+		DatabaseURL:   utils.GetEnv("DATABASE_URL", ""),
 		RedisURL:      utils.GetEnv("REDIS_URL", "redis://localhost:6379"),
 		SMTPHost:      utils.GetEnv("SMTP_HOST", "localhost"),
 		SMTPPort:      utils.GetEnv("SMTP_PORT", "1025"),
