@@ -13,14 +13,17 @@ type QueueClient struct {
 	client *asynq.Client
 }
 
-// NewQueueClient creates a new queue client
-// it will connect to redis with the given redisAddr
-func NewQueueClient(redisAddr string) *QueueClient {
-	client := asynq.NewClient(asynq.RedisClientOpt{Addr: redisAddr})
+func NewQueueClient(redisURL string) *QueueClient {
+	opt, err := asynq.ParseRedisURI(redisURL)
+	if err != nil {
+		opt = asynq.RedisClientOpt{Addr: redisURL}
+	}
+	client := asynq.NewClient(opt)
 	return &QueueClient{
 		client: client,
 	}
 }
+
 // Close will close the queue client
 func (q *QueueClient) Close() error {
 	return q.client.Close()
