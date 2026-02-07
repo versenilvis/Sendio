@@ -28,6 +28,7 @@ type SendEmailRequest struct {
 	BodyHTML     *string        `json:"body_html"`
 	BodyText     *string        `json:"body_text"`
 }
+
 // SendEmail handles the HTTP request for sending an email
 // at HTTP/API layer, it doesnt care about the database
 // it only cares about the request and response
@@ -46,16 +47,14 @@ func (h *EmailHandler) SendEmail(c fiber.Ctx) error {
 	}
 
 	// get API Key ID from context (set by AuthRequired middleware)
-	// because c.Locals function return a any type, so we have to declare a 16 bytes slice
-	// UUID in pgx
-	apiKeyID, ok := c.Locals("apiKeyID").([16]byte)
-	if !ok {
+	apiKeyID := fiber.Locals[[16]byte](c, "apiKeyID")
+	if apiKeyID == [16]byte{} {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "API Key ID not found in context",
+			"error": "API Key ID not found or invalid",
 		})
 	}
 
-	emailData, err := h.emailSvc.SendEmail(c.Context(), email.SendEmailParams{
+	emailData, err := h.emailSvc.SendEmail(c, email.SendEmailParams{
 		APIKeyID:     apiKeyID,
 		FromEmail:    req.FromEmail,
 		FromName:     req.FromName,
