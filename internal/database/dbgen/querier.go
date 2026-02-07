@@ -12,9 +12,11 @@ import (
 )
 
 type Querier interface {
+	CreateEmail(ctx context.Context, arg CreateEmailParams) (Email, error)
 	GetAPIKeyByHash(ctx context.Context, keyHash string) (ApiKey, error)
 	GetDefaultSMTPConfig(ctx context.Context) (SmtpConfig, error)
 	GetEmailByID(ctx context.Context, id pgtype.UUID) (Email, error)
+	GetEmailByStatus(ctx context.Context, arg GetEmailByStatusParams) ([]Email, error)
 	GetPlanByID(ctx context.Context, id pgtype.UUID) (Plan, error)
 	GetSMTPConfigByID(ctx context.Context, id pgtype.UUID) (SmtpConfig, error)
 	GetSubscriptionByApiKeyID(ctx context.Context, apiKeyID pgtype.UUID) (Subscription, error)

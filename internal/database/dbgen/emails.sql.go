@@ -12,6 +12,78 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const createEmail = `-- name: CreateEmail :one
+INSERT INTO emails (
+    api_key_id, idempotency_key, from_email, from_name, 
+    to_email, to_name, subject, template_id, template_vars, 
+    body_html, body_text, tags, metadata, status
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+) RETURNING id, api_key_id, idempotency_key, from_email, from_name, to_email, to_name, subject, template_id, template_vars, body_html, body_text, tags, metadata, status, retry_count, max_retries, created_at, scheduled_at, queued_at, sent_at, delivered_at
+`
+
+type CreateEmailParams struct {
+	ApiKeyID       pgtype.UUID     `json:"api_key_id"`
+	IdempotencyKey pgtype.Text     `json:"idempotency_key"`
+	FromEmail      string          `json:"from_email"`
+	FromName       pgtype.Text     `json:"from_name"`
+	ToEmail        string          `json:"to_email"`
+	ToName         pgtype.Text     `json:"to_name"`
+	Subject        string          `json:"subject"`
+	TemplateID     pgtype.UUID     `json:"template_id"`
+	TemplateVars   []byte          `json:"template_vars"`
+	BodyHtml       pgtype.Text     `json:"body_html"`
+	BodyText       pgtype.Text     `json:"body_text"`
+	Tags           []byte          `json:"tags"`
+	Metadata       []byte          `json:"metadata"`
+	Status         NullEmailStatus `json:"status"`
+}
+
+func (q *Queries) CreateEmail(ctx context.Context, arg CreateEmailParams) (Email, error) {
+	row := q.db.QueryRow(ctx, createEmail,
+		arg.ApiKeyID,
+		arg.IdempotencyKey,
+		arg.FromEmail,
+		arg.FromName,
+		arg.ToEmail,
+		arg.ToName,
+		arg.Subject,
+		arg.TemplateID,
+		arg.TemplateVars,
+		arg.BodyHtml,
+		arg.BodyText,
+		arg.Tags,
+		arg.Metadata,
+		arg.Status,
+	)
+	var i Email
+	err := row.Scan(
+		&i.ID,
+		&i.ApiKeyID,
+		&i.IdempotencyKey,
+		&i.FromEmail,
+		&i.FromName,
+		&i.ToEmail,
+		&i.ToName,
+		&i.Subject,
+		&i.TemplateID,
+		&i.TemplateVars,
+		&i.BodyHtml,
+		&i.BodyText,
+		&i.Tags,
+		&i.Metadata,
+		&i.Status,
+		&i.RetryCount,
+		&i.MaxRetries,
+		&i.CreatedAt,
+		&i.ScheduledAt,
+		&i.QueuedAt,
+		&i.SentAt,
+		&i.DeliveredAt,
+	)
+	return i, err
+}
+
 const getEmailByID = `-- name: GetEmailByID :one
 SELECT id, api_key_id, idempotency_key, from_email, from_name, to_email, to_name, subject, template_id, template_vars, body_html, body_text, tags, metadata, status, retry_count, max_retries, created_at, scheduled_at, queued_at, sent_at, delivered_at FROM emails WHERE id = $1
 `
@@ -44,6 +116,58 @@ func (q *Queries) GetEmailByID(ctx context.Context, id pgtype.UUID) (Email, erro
 		&i.DeliveredAt,
 	)
 	return i, err
+}
+
+const getEmailByStatus = `-- name: GetEmailByStatus :many
+SELECT id, api_key_id, idempotency_key, from_email, from_name, to_email, to_name, subject, template_id, template_vars, body_html, body_text, tags, metadata, status, retry_count, max_retries, created_at, scheduled_at, queued_at, sent_at, delivered_at FROM emails WHERE status = $1 LIMIT $2
+`
+
+type GetEmailByStatusParams struct {
+	Status NullEmailStatus `json:"status"`
+	Limit  int32           `json:"limit"`
+}
+
+func (q *Queries) GetEmailByStatus(ctx context.Context, arg GetEmailByStatusParams) ([]Email, error) {
+	rows, err := q.db.Query(ctx, getEmailByStatus, arg.Status, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Email
+	for rows.Next() {
+		var i Email
+		if err := rows.Scan(
+			&i.ID,
+			&i.ApiKeyID,
+			&i.IdempotencyKey,
+			&i.FromEmail,
+			&i.FromName,
+			&i.ToEmail,
+			&i.ToName,
+			&i.Subject,
+			&i.TemplateID,
+			&i.TemplateVars,
+			&i.BodyHtml,
+			&i.BodyText,
+			&i.Tags,
+			&i.Metadata,
+			&i.Status,
+			&i.RetryCount,
+			&i.MaxRetries,
+			&i.CreatedAt,
+			&i.ScheduledAt,
+			&i.QueuedAt,
+			&i.SentAt,
+			&i.DeliveredAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateEmailQueued = `-- name: UpdateEmailQueued :exec
