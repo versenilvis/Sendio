@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing';
 	import { tick } from 'svelte';
 	import CollapsedState from './notch/CollapsedState.svelte';
 	import MetricWidget from './notch/MetricWidget.svelte';
@@ -64,8 +65,8 @@
 					isExpanded = true; 
 				} 
 			}}
-			class="relative flex flex-col bg-black pointer-events-auto transition-[width,height,border-radius,padding] duration-400 ease-[cubic-bezier(0.2,1,0.2,1)] overflow-hidden outline-none
-				{isExpanded ? 'w-[920px] h-[640px] rounded-b-[48px] pt-8 cursor-default' : isHovered ? 'w-[440px] h-[70px] rounded-b-[36px] cursor-pointer' : 'w-[380px] h-[60px] rounded-b-[30px] cursor-pointer'}"
+			class="relative flex flex-col bg-black pointer-events-auto transition-[width,height,border-radius,padding,box-shadow] duration-500 ease-[cubic-bezier(0.2,1.2,0.3,1)] overflow-hidden outline-none notch-island
+				{isExpanded ? 'w-[min(920px,96vw)] h-[min(640px,90vh)] rounded-b-[48px] pt-8 cursor-default expanded' : isHovered ? 'w-[min(394px,92vw)] h-[66px] rounded-b-[34px] cursor-pointer hovered' : 'w-[min(380px,90vw)] h-[60px] rounded-b-[30px] cursor-pointer'}"
 		>
 			<!-- subtle surface shine -->
 			<div class="absolute inset-0 bg-linear-to-b from-white/8 to-transparent pointer-events-none"></div>
@@ -84,12 +85,15 @@
 			<!-- expanded state -->
 			{#if isExpanded}
 				<div 
-					in:fade={{ duration: 250, delay: 150 }}
-					out:fade={{ duration: 0 }}
+					in:fade={{ duration: 300 }}
+					out:fade={{ duration: 100 }}
 					class="w-full px-12 relative z-10 text-left h-full flex flex-col"
 				>
 					<!-- Top Row: Brand & Compact Search -->
-					<div class="flex items-center justify-between mb-8">
+					<div 
+						in:fly={{ y: -10, duration: 500, delay: 50, easing: quintOut }}
+						class="flex items-center justify-between mb-8"
+					>
 						<!-- logo -->
 						<a href="/" class="flex items-center text-xl font-black tracking-tight text-white transition-opacity hover:opacity-80" onclick={(e) => e.stopPropagation()}>
 							<div class="flex h-8 w-8 items-center justify-center rounded-lg">
@@ -127,8 +131,10 @@
 						</div>
 					</div>
 
-					<MetricWidget />
-					<NavGrid />
+					<div in:fly={{ y: 20, duration: 600, delay: 150, easing: quintOut }}>
+						<MetricWidget />
+						<NavGrid />
+					</div>
 					
 				</div>
 			{/if}
@@ -139,9 +145,36 @@
 
 <style>
 	.notch-wrapper {
-		filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8));
-		-webkit-filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8));
+		position: relative;
+		animation: notch-entrance 0.9s cubic-bezier(0.2, 1, 0.2, 1);
 	}
+
+	.notch-island {
+		transform-origin: top center;
+		box-shadow: 
+			0 8px 24px -8px rgba(0, 0, 0, 0.4),
+			0 16px 32px -12px rgba(0, 0, 0, 0.2);
+	}
+
+	@keyframes notch-entrance {
+		0% { transform: translateY(-130%); opacity: 0; }
+		100% { transform: translateY(0); opacity: 1; }
+	}
+
+	.notch-island.expanded {
+		animation: apple-pop 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+		box-shadow: 
+			0 20px 60px -10px rgba(0, 0, 0, 0.7),
+			0 40px 80px -20px rgba(0, 0, 0, 0.5);
+	}
+
+	@keyframes apple-pop {
+		0% { transform: scale(1); }
+		40% { transform: scale(1.04); }
+		100% { transform: scale(1); }
+	}
+
+	/* notch island layered shadows handled above */
 
 	.notch-wrapper::before,
 	.notch-wrapper::after {
