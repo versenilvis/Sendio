@@ -11,14 +11,16 @@ type Registry struct {
 	Q     *dbgen.Queries
 	Email EmailRepository
 	SMTP  SMTPRepository
+	Auth  AuthRepository
 }
+
 // NewRegistry creates a new instance of Registry
-// this will make our code look really clean by just repository.NewRegistry(db)
 func NewRegistry(db *database.DB) *Registry {
 	q := dbgen.New(db.Pool)
 	return &Registry{
 		Q:     q,
 		Email: NewEmailRepository(q),
 		SMTP:  NewSMTPRepository(q),
+		Auth:  NewAuthRepository(q),
 	}
 }
