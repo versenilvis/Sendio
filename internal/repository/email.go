@@ -5,6 +5,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -18,6 +19,24 @@ type EmailRepository interface {
 	GetByID(ctx context.Context, id string) (*models.Email, error)
 	UpdateStatus(ctx context.Context, id string, status models.EmailStatus, field string) error
 	TryLockForProcessing(ctx context.Context, id string) (bool, error)
+	Create(ctx context.Context, params CreateEmailParams) (*dbgen.Email, error)
+}
+
+// CreateEmailParams is a struct that holds the information from user input
+// it differs from models.Email
+type CreateEmailParams struct {
+	APIKeyID       [16]byte
+	IdempotencyKey *string
+	FromEmail      string
+	FromName       *string
+	ToEmail        string
+	ToName         *string
+	Subject        string
+	TemplateID     *string
+	TemplateVars   map[string]any
+	BodyHTML       *string
+	BodyText       *string
+	Status         models.EmailStatus
 }
 
 type emailRepo struct {
@@ -106,6 +125,66 @@ func (r *emailRepo) TryLockForProcessing(ctx context.Context, id string) (bool, 
 	}
 
 	return result.RowsAffected() > 0, nil
+}
+
+/*
+Create converts type to postgres types and stores records into database
+
+request -> handler.SendEmail(c) 
+
+service.SendEmail(ctx, params)
+    Validate params
+    repo.Create() to store in db
+    queue.EnqueueEmail() to queue task
+
+repo.Create(ctx, params)
+    Convert types
+    INSERT INTO emails ...
+*/
+func (r *emailRepo) Create(ctx context.Context, params CreateEmailParams) (*dbgen.Email, error) {
+	templateVars, _ := json.Marshal(params.TemplateVars)
+
+	var apiID pgtype.UUID
+	apiID.Bytes = params.APIKeyID
+	apiID.Valid = true
+
+	var templateID pgtype.UUID
+	if params.TemplateID != nil {
+		if err := templateID.Scan(*params.TemplateID); err != nil {
+			return nil, err
+		}
+	}
+
+	email, err := r.q.CreateEmail(ctx, dbgen.CreateEmailParams{
+		ApiKeyID:     apiID,
+		FromEmail:    params.FromEmail,
+		FromName:     pgtype.Text{String: getString(params.FromName), Valid: params.FromName != nil},
+		ToEmail:      params.ToEmail,
+		ToName:       pgtype.Text{String: getString(params.ToName), Valid: params.ToName != nil},
+		Subject:      params.Subject,
+		TemplateID:   templateID,
+		TemplateVars: templateVars,
+		BodyHtml:     pgtype.Text{String: getString(params.BodyHTML), Valid: params.BodyHTML != nil},
+		BodyText:     pgtype.Text{String: getString(params.BodyText), Valid: params.BodyText != nil},
+		Status: dbgen.NullEmailStatus{
+			EmailStatus: dbgen.EmailStatus(params.Status),
+			Valid:       true,
+		},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &email, nil
+}
+
+// getString is a helper function to convert a pointer of a string to a string
+func getString(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
 }
 
 // mapDBEmailToModel converts the raw database record into a clean domain model
