@@ -41,8 +41,8 @@
 			<div class="absolute bottom-0 right-0 w-[90%] md:w-[70%] lg:w-[145%] xl:w-[135%] max-w-[900px] lg:max-w-none lg:h-[95%] flex items-end justify-end">
 				<img 
 					src={handModel} 
-					alt="Sendio App Dashboard" 
-					class="w-full h-full object-contain object-bottom drop-shadow-[-40px_20px_60px_rgba(0,0,0,0.15)] bg-blend-overlay animate-fade-in translate-x-[10%] lg:translate-x-0"
+					alt="" 
+					class="w-full h-full object-contain object-bottom drop-shadow-[-40px_20px_60px_rgba(0,0,0,0.15)] bg-blend-overlay animate-fade-in translate-x-[10%] lg:translate-x-0 text-transparent"
 				/>
 				<!-- White gradient overlay to blend the hand model 
 				<div class="absolute inset-x-0 bottom-0 h-[25%] bg-linear-to-t from-white via-white/40 to-transparent z-20 pointer-events-none"></div>
