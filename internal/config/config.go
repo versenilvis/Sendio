@@ -8,14 +8,15 @@ import (
 )
 
 type Config struct {
-	Port     string         `json:"port"`
-	Env      string         `json:"env"`
-	BaseURL  string         `json:"base_url"`
-	Database DatabaseConfig `json:"database"`
-	Redis    RedisConfig    `json:"redis"`
-	SMTP     SMTPConfig     `json:"smtp"`
-	Security SecurityConfig `json:"security"`
-	OAuth    OAuthConfig    `json:"oauth"`
+	Port      string         `json:"port"`
+	Env       string         `json:"env"`
+	ServerURL string         `json:"server_url"`
+	WebURL    string         `json:"web_url"`
+	Database  DatabaseConfig `json:"database"`
+	Redis     RedisConfig    `json:"redis"`
+	SMTP      SMTPConfig     `json:"smtp"`
+	Security  SecurityConfig `json:"security"`
+	OAuth     OAuthConfig    `json:"oauth"`
 }
 
 type DatabaseConfig struct {
@@ -50,9 +51,10 @@ type OAuthConfig struct {
 
 func Load() *Config {
 	cfg := &Config{
-		Port:    utils.GetEnv("PORT", "8080"),
-		Env:     utils.GetEnv("APP_ENV", "development"),
-		BaseURL: utils.GetEnv("BASE_URL", "http://localhost:8080"),
+		Port:      utils.GetEnv("PORT", "8080"),
+		Env:       utils.GetEnv("APP_ENV", "development"),
+		ServerURL: utils.GetEnv("SERVER_URL", "http://localhost:8080"),
+		WebURL:    utils.GetEnv("WEB_URL", "http://localhost:5173"),
 
 		Database: DatabaseConfig{
 			URL:      utils.GetEnv("DATABASE_URL", ""),

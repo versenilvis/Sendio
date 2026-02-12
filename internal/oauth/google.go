@@ -21,7 +21,7 @@ func NewGoogle(cfg *config.Config) *GoogleProvider {
 		config: &oauth2.Config{
 			ClientID:     cfg.OAuth.GoogleClientID,
 			ClientSecret: cfg.OAuth.GoogleClientSecret,
-			RedirectURL:  cfg.BaseURL + "/auth/callback/google",
+			RedirectURL:  cfg.ServerURL + "/auth/callback/google",
 			Scopes: []string{
 				"https://www.googleapis.com/auth/userinfo.email",
 				"https://www.googleapis.com/auth/userinfo.profile",

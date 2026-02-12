@@ -21,7 +21,7 @@ func NewGitHub(cfg *config.Config) *GitHubProvider {
 		config: &oauth2.Config{
 			ClientID:     cfg.OAuth.GitHubClientID,
 			ClientSecret: cfg.OAuth.GitHubClientSecret,
-			RedirectURL:  cfg.BaseURL + "/auth/callback/github",
+			RedirectURL:  cfg.ServerURL + "/auth/callback/github",
 			Scopes:       []string{"user:email", "read:user"},
 			Endpoint:     github.Endpoint,
 		},
