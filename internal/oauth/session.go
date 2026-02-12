@@ -35,7 +35,7 @@ func (s *SessionManager) CreateSession(ctx context.Context, userID pgtype.UUID) 
 	token := base64.URLEncoding.EncodeToString(tokenBytes)
 
 	hash := sha256.New()
-	hash.Write([]byte(token + s.cfg.SessionSecret))
+	hash.Write([]byte(token + s.cfg.Security.SessionSecret))
 	tokenHash := hex.EncodeToString(hash.Sum(nil))
 
 	expiresAt := time.Now().Add(30 * 24 * time.Hour)
@@ -53,7 +53,7 @@ func (s *SessionManager) CreateSession(ctx context.Context, userID pgtype.UUID) 
 
 func (s *SessionManager) ValidateSession(ctx context.Context, token string) (*dbgen.GetSessionByTokenHashRow, error) {
 	hash := sha256.New()
-	hash.Write([]byte(token + s.cfg.SessionSecret))
+	hash.Write([]byte(token + s.cfg.Security.SessionSecret))
 	tokenHash := hex.EncodeToString(hash.Sum(nil))
 
 	sessionUser, err := s.repo.GetSessionByTokenHash(ctx, tokenHash)
@@ -66,7 +66,7 @@ func (s *SessionManager) ValidateSession(ctx context.Context, token string) (*db
 
 func (s *SessionManager) DeleteSession(ctx context.Context, token string) error {
 	hash := sha256.New()
-	hash.Write([]byte(token + s.cfg.SessionSecret))
+	hash.Write([]byte(token + s.cfg.Security.SessionSecret))
 	tokenHash := hex.EncodeToString(hash.Sum(nil))
 
 	return s.repo.DeleteSessionByTokenHash(ctx, tokenHash)

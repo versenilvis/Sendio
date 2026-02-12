@@ -19,8 +19,8 @@ type GoogleProvider struct {
 func NewGoogle(cfg *config.Config) *GoogleProvider {
 	return &GoogleProvider{
 		config: &oauth2.Config{
-			ClientID:     cfg.GoogleClientID,
-			ClientSecret: cfg.GoogleClientSecret,
+			ClientID:     cfg.OAuth.GoogleClientID,
+			ClientSecret: cfg.OAuth.GoogleClientSecret,
 			RedirectURL:  cfg.BaseURL + "/auth/callback/google",
 			Scopes: []string{
 				"https://www.googleapis.com/auth/userinfo.email",

@@ -4,14 +4,13 @@ package database
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
+	"github.com/versenilvis/sendio/internal/config"
 	"github.com/versenilvis/sendio/internal/logger"
-	"github.com/versenilvis/sendio/internal/utils"
 )
 
 type DB struct {
@@ -22,15 +21,13 @@ type DB struct {
 // parse config: convert db url to a struct that pgx understands
 // create pool but still not connected yet
 // ping to check
-func NewConnection() (*DB, error) {
-	// data source name
-	dsn := os.Getenv("DATABASE_URL")
-	if dsn == "" {
+func NewConnection(cfg *config.Config) (*DB, error) {
+	if cfg.Database.URL == "" {
 		// please dont use panic here, just print log and return error
-		return nil, fmt.Errorf("DATABASE_URL environment variable is required")
+		return nil, fmt.Errorf("DATABASE_URL is required")
 	}
 
-	config, err := pgxpool.ParseConfig(dsn)
+	poolConfig, err := pgxpool.ParseConfig(cfg.Database.URL)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing database config: %w", err)
 	}
@@ -38,15 +35,15 @@ func NewConnection() (*DB, error) {
 	// NOTE: change in env
 
 	// maximum number of connections allowed in the pool
-	config.MaxConns = int32(utils.GetEnvAsInt("DB_MAX_CONNS", 25))
+	poolConfig.MaxConns = int32(cfg.Database.MaxConns)
 	// minimum number of connections to maintain in the pool even if idle
-	config.MinConns = int32(utils.GetEnvAsInt("DB_MIN_CONNS", 5))
+	poolConfig.MinConns = int32(cfg.Database.MinConns)
 	// duration after which an idle connection will be closed and removed from the pool
-	config.MaxConnIdleTime = time.Duration(utils.GetEnvAsInt("DB_MAX_IDLE_MINS", 5)) * time.Minute
+	poolConfig.MaxConnIdleTime = 5 * time.Minute
 	// maximum amount of time a connection may be reused
-	config.MaxConnLifetime = time.Duration(utils.GetEnvAsInt("DB_MAX_LIFE_MINS", 60)) * time.Minute
+	poolConfig.MaxConnLifetime = 60 * time.Minute
 
-	pool, err := pgxpool.NewWithConfig(context.Background(), config)
+	pool, err := pgxpool.NewWithConfig(context.Background(), poolConfig)
 	if err != nil {
 		return nil, fmt.Errorf("error creating database pool: %w", err)
 	}

@@ -19,8 +19,8 @@ type GitHubProvider struct {
 func NewGitHub(cfg *config.Config) *GitHubProvider {
 	return &GitHubProvider{
 		config: &oauth2.Config{
-			ClientID:     cfg.GitHubClientID,
-			ClientSecret: cfg.GitHubClientSecret,
+			ClientID:     cfg.OAuth.GitHubClientID,
+			ClientSecret: cfg.OAuth.GitHubClientSecret,
 			RedirectURL:  cfg.BaseURL + "/auth/callback/github",
 			Scopes:       []string{"user:email", "read:user"},
 			Endpoint:     github.Endpoint,
