@@ -43,3 +43,16 @@ func GetEnvAsBool(key string, defaultVal bool) bool {
 	}
 	return val
 }
+
+// func getEnvAsDuration(key string, defaultVal time.Duration) time.Duration {
+// 	val := os.Getenv(key)
+// 	if val == "" {
+// 		return defaultVal
+// 	}
+// 	duration, err := time.ParseDuration(val)
+// 	if err != nil {
+// 		log.Printf("Warning: Invalid duration format for %s. Using default: %v", key, defaultVal)
+// 		return defaultVal
+// 	}
+// 	return duration
+// }
