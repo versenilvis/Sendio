@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 
 	"github.com/versenilvis/sendio/internal/config"
 	"golang.org/x/oauth2"
@@ -71,10 +72,13 @@ func (p *GoogleProvider) Exchange(ctx context.Context, code string) (*UserInfo, 
 		return nil, fmt.Errorf("failed to unmarshal user info: %w", err)
 	}
 
+	// remove the postfix "=s..." so we can get full resolution avatar
+	avatarURL := regexp.MustCompile(`=s\d+-c$`).ReplaceAllString(googleUser.Picture, "")
+
 	return &UserInfo{
 		ProviderID: googleUser.Sub,
 		Email:      googleUser.Email,
 		Name:       googleUser.Name,
-		AvatarURL:  googleUser.Picture,
+		AvatarURL:  avatarURL,
 	}, nil
 }
