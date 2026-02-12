@@ -53,7 +53,7 @@ func Load() *Config {
 	cfg := &Config{
 		Port:      utils.GetEnv("PORT", "8080"),
 		Env:       utils.GetEnv("APP_ENV", "development"),
-		ServerURL: utils.GetEnv("SERVER_URL", "http://localhost:8080"),
+		ServerURL: utils.GetEnv("PUBLIC_SERVER_URL", "http://localhost:8080"),
 		WebURL:    utils.GetEnv("WEB_URL", "http://localhost:5173"),
 
 		Database: DatabaseConfig{
