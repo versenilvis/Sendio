@@ -12,6 +12,7 @@ type Registry struct {
 	Email EmailRepository
 	SMTP  SMTPRepository
 	Auth  AuthRepository
+	User  UserRepository
 }
 
 // NewRegistry creates a new instance of Registry
@@ -22,5 +23,6 @@ func NewRegistry(db *database.DB) *Registry {
 		Email: NewEmailRepository(q),
 		SMTP:  NewSMTPRepository(q),
 		Auth:  NewAuthRepository(q),
+		User:  NewUserRepository(q),
 	}
 }
