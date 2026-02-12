@@ -91,6 +91,9 @@ func (h *OAuthHandler) handleCallback(c fiber.Ctx, provider oauth.Provider, prov
 		}
 	} else {
 		// user found -> update info
+		name := &userInfo.Name
+		avatar := &userInfo.AvatarURL
+		h.userRepo.UpdateUser(c.Context(), existingUser.ID, name, avatar)
 		userID = existingUser.ID
 	}
 
@@ -120,10 +123,9 @@ func (h *OAuthHandler) handleCallback(c fiber.Ctx, provider oauth.Provider, prov
 		Path:     "/",
 	})
 
-	// close popup or redirect
-	// since we are using a popup, we can close the window and reload parent
-	// or just redirect to home if not popup
-	return c.SendString("<script>window.opener.location.reload();window.close();</script>")
+	// close popup - parent window detects this via setInterval and reloads
+	c.Set("Content-Type", "text/html")
+	return c.SendString("<html><body><script>window.close();</script></body></html>")
 }
 
 func (h *OAuthHandler) generateState(c fiber.Ctx) string {
