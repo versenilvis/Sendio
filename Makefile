@@ -1,6 +1,6 @@
 MAKEFLAGS += --no-print-directory
 
-.PHONY: up down run worker logs clean web server migrate-up mu migrate-down md
+.PHONY: up down run worker logs clean web server migrate-up mu migrate-down md dbgen
 
 up:
 	@docker compose up -d $(s)
@@ -37,3 +37,6 @@ migrate-down md:
 clean:
 	@go clean
 	@rm -rf bin/
+
+dbgen:
+	@sqlc generate
