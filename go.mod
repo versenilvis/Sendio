@@ -1,6 +1,6 @@
 module github.com/versenilvis/sendio
 
-go 1.25.6
+go 1.26.0
 
 require (
 	github.com/gofiber/fiber/v3 v3.0.0
@@ -11,10 +11,12 @@ require (
 	github.com/redis/go-redis/v9 v9.17.3
 	github.com/wneessen/go-mail v0.7.2
 	go.uber.org/zap v1.27.1
+	golang.org/x/oauth2 v0.35.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
